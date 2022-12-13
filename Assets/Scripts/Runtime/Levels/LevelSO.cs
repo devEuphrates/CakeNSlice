@@ -7,5 +7,14 @@ public class LevelSO : ScriptableObject
     public int Level;
     public GameObject LevelPrefab;
     public RecipeSO Recipe;
-    public uint SliceCount;
+    public ushort SliceCount;
+
+    public void Copy(LevelSO copied)
+    {
+        Name = copied.Name;
+        Level = copied.Level;
+        LevelPrefab = copied.LevelPrefab;
+        Recipe = copied.Recipe;
+        SliceCount = copied.SliceCount;
+    }
 }

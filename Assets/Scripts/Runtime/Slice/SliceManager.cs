@@ -1,5 +1,6 @@
 using Euphrates;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class SliceManager : MonoBehaviour
@@ -17,6 +18,7 @@ public class SliceManager : MonoBehaviour
     [SerializeField] FloatSO _inputTreshold;
     [SerializeField] FloatSO _sliceSize;
     [SerializeField] SliceHolderSO _sliceHolder;
+    [SerializeField] LevelSO _level;
 
     List<int> _cuts = new List<int>();
 
@@ -25,7 +27,6 @@ public class SliceManager : MonoBehaviour
     private void OnEnable()
     {
         _activateTrigger.AddListener(EnableCutting);
-        _deactivateTrigger.AddListener(DisableCutting);
 
         _inputReader.OnTouchDown += OnTouchDown;
         _inputReader.OnTouchMove += OnTouchMove;
@@ -37,7 +38,6 @@ public class SliceManager : MonoBehaviour
     private void OnDisable()
     {
         _activateTrigger.RemoveListener(EnableCutting);
-        _deactivateTrigger.RemoveListener(DisableCutting);
 
         _inputReader.OnTouchDown -= OnTouchDown;
         _inputReader.OnTouchMove -= OnTouchMove;
@@ -51,7 +51,7 @@ public class SliceManager : MonoBehaviour
 
     void OnTouchMove(Vector2 position)
     {
-        if (!_enabled) 
+        if (!_enabled)
             return;
 
         float xMove = (position - _initialTouch).x;
@@ -71,7 +71,7 @@ public class SliceManager : MonoBehaviour
 
     //}
 
-    void OnCut()
+    async void OnCut()
     {
         int curCut = _currentCut;
         int cnt = Mathf.RoundToInt(360f / _sliceSize);
@@ -91,21 +91,24 @@ public class SliceManager : MonoBehaviour
             return;
 
         _cuts.Add(curCut);
+
+        if (_level.SliceCount == _cuts.Count)
+        {
+            enabled = false;
+
+            if (_cuts.Count == 0)
+                return;
+
+            await Task.Delay(1000);
+
+            var slices = _cake.Slice(_cuts.ToArray());
+            _sliceHolder.SetList(slices);
+            _deactivateTrigger.Invoke();
+        }
     }
 
     void EnableCutting()
     {
         _enabled = true;
-    }
-
-    void DisableCutting()
-    {
-        enabled = false;
-
-        if (_cuts.Count == 0)
-            return;
-
-        var slices = _cake.Slice(_cuts.ToArray());
-        _sliceHolder.SetList(slices);
     }
 }

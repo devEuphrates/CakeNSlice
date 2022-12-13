@@ -51,9 +51,9 @@ public class CakeController : MonoBehaviour
             return;
 
         float verticalTarget = _transform.position.z + _maxVerticalSpeed * Time.fixedDeltaTime;
-        Vector3 target = new Vector3(_xTarget, 0f, verticalTarget);
+        Vector3 target = new Vector3(Mathf.Lerp(_transform.position.x, _xTarget, _moveLerp * Time.fixedDeltaTime), 0f, verticalTarget);
 
-        _transform.position = Vector3.Lerp(_transform.position, target, _moveLerp * Time.fixedDeltaTime);
+        _transform.position = target;
     }
 
     Vector2 _initialTouch;
@@ -72,7 +72,7 @@ public class CakeController : MonoBehaviour
         float xMagnitude = touchMove.x / _inputRadius;
         _initialTouch = position;
 
-        _xTarget = Mathf.Clamp(_transform.position.x + xMagnitude * _maxHorizontalSpeed, -_maxHorizontalDistance, _maxHorizontalDistance);
+        _xTarget = Mathf.Clamp(_xTarget + xMagnitude * _maxHorizontalSpeed, -_maxHorizontalDistance, _maxHorizontalDistance);
     }
 
     void OnPhaseOne()

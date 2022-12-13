@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Cake : MonoBehaviour
 {
-    List<CakeLayer> _layers = new List<CakeLayer>();
+    readonly List<CakeLayer> _layers = new List<CakeLayer>();
     [SerializeField] RecipeSO _currentRecipe;
     [SerializeField] TriggerChannelSO _hideTrigger;
     [SerializeField] SliceableCake _sliceableCake;
@@ -27,8 +27,7 @@ public class Cake : MonoBehaviour
 
         piece.Picked(this, _layers.Count - 1);
 
-        ISliceable sliceable = piece as ISliceable;
-        if (sliceable == null)
+        if (piece is not ISliceable sliceable)
             return;
 
         _sliceableCake.AddLayer(sliceable.SliceableLayer);

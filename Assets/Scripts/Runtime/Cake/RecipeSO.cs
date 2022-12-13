@@ -39,18 +39,27 @@ public class RecipeSO : ScriptableObject
         OnPieceRemoved?.Invoke();
     }
 
-    public bool IdenticalTo(RecipeSO recipe)
+    /// <summary>
+    /// Similarness between given recipe and it's own. Returns a value between 0 and 1.
+    /// </summary>
+    /// <param name="recipe">Recipe to check against</param>
+    /// <returns></returns>
+    public float Similarness(RecipeSO recipe)
     {
-        if (_pieces.Count != recipe.PieceCount)
-            return false;
+        bool check = recipe.PieceCount > PieceCount;
+        int maxCount = check ? recipe.PieceCount : PieceCount;
+        int minCount = check ? PieceCount : recipe.PieceCount;
 
-        for (int i = 0; i < _pieces.Count; i++)
+        float step = 1f / (int)maxCount;
+        float rval = 0f;
+
+        for (int i = 0; i < minCount; i++)
         {
-            if (_pieces[i] != recipe.GetPieceAtIndex(i))
-                return false;
+            if (_pieces[i] == recipe.GetPieceAtIndex(i))
+                rval += step;
         }
 
-        return true;
+        return Mathf.Clamp01(rval);
     }
 
     public float GetOffsetAtIndex(int index)

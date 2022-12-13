@@ -31,7 +31,7 @@ public class LocalPositionLerp : MonoBehaviour
             return;
 
         Vector3 localized = _targetParent.position + _targetLocalPosition;
-        Vector3 lerped = Vector3.Lerp(_transform.position, localized, _lerpAmount * Time.fixedDeltaTime);
+        Vector3 lerped = Vector3.Lerp(_transform.position, localized, Mathf.Clamp(_lerpAmount * Time.fixedDeltaTime, .1f, 1f));
         _transform.position = new Vector3(lerped.x, lerped.y, localized.z);
     }
 }
