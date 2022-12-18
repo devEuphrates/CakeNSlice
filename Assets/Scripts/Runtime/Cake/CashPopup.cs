@@ -22,7 +22,19 @@ public class CashPopup : MonoBehaviour
 
     void CollectedUpdated(int change)
     {
-        _text.text = $"+{change}$";
-        _canvasGroup.DoAlpha(1f, .5f, Ease.Lerp, null, () => _canvasGroup.DoAlpha(0f, .5f));
+        if (change > 0)
+        {
+            _text.text = $"+{change}$";
+            _canvasGroup.DoAlpha(1f, .5f, Ease.Lerp, null, () => _canvasGroup.DoAlpha(0f, .5f));
+        }
+
+        else 
+        {
+            _text.text = $"-{change}$";
+            _canvasGroup.DoAlpha(1f, .5f, Ease.Lerp, null, () => _canvasGroup.DoAlpha(0f, .5f));
+        }
+
+
+
     }
 }
